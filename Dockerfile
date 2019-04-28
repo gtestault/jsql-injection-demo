@@ -1,7 +1,8 @@
-FROM php:7.3.4-apache-stretch
-RUN apt-get update &&\
-    curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh &&\
-    dep ensure &&\
-    apt-get install gcc &&\
-    go install -i -v
-EXPOSE 8080
+FROM mattrayner/lamp:latest-1804
+ADD
+RUN wget https://github.com/gtestault/jsql-injection-demo/raw/master/Sakila.tar.gz &&\
+    tar -xzf Sakila.tar.gz &&\
+    echo "create database `sakila`" | mysql -u root -p &&\
+    mysql -u root sakila < /Sakila/mysql-sakila-db/mysql-sakila-schema.sql
+    mysql -u root sakila < /Sakila/mysql-sakila-db/mysql-sakila-insert-data.sql &&\
+CMD ["/run.sh"]
