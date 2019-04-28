@@ -1,5 +1,4 @@
 FROM mattrayner/lamp:latest-1804
-ADD
 RUN wget https://github.com/gtestault/jsql-injection-demo/raw/master/Sakila.tar.gz &&\
     tar -xzf Sakila.tar.gz &&\
     echo "create database `sakila`" | mysql -u root -p &&\
