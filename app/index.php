@@ -1,8 +1,12 @@
+<h1> Actor Database </h1>
 <?php
 $servername = "localhost";
 $username = "root";
 $password = "";
-
+$page = $_GET['page'];
+if ($page === null) {
+    $page = 1;
+}
 // Create connection
 $conn = new mysqli($servername, $username, $password, "sakila");
 
@@ -10,25 +14,30 @@ $conn = new mysqli($servername, $username, $password, "sakila");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-echo "Connected successfully";
-if ($result = $conn->query("SELECT * FROM actor LIMIT 10")) {
-    printf("Select returned %d rows.\n", $result->num_rows);
-
+if ($result = $conn->query("SELECT * FROM actor WHERE actor.actor_id = $page")) {
+    echo '<table style="width:100%">';
+    while (($rows = $result->fetch_assoc()) !== null) {
+        echo '<tr>';
+        foreach($rows as $row) {
+            echo '<td>';
+            echo $row;
+            echo '</td>';
+        }
+        echo '</tr>';
+    }
     /* free result set */
     $result->close();
+    echo '</table>';
+} else {
+    echo("Error description: " . mysqli_error($conn));
 }
 ?> 
+<?php
+    if (is_numeric($page)) {
+        $newPage = $page + 1;
+    } else {
+        $newPage = "";
+    }
 
-<form action="" method="post">
-<table width="50%">
-    <tr>
-        <td>User</td>
-        <td><input type="text" name="user"></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td><input type="text" name="password"></td>
-    </tr>
-</table>
-    <input type="submit" value="OK" name="s">
-</form>
+    echo '<a href=/?page='. $newPage . '><input type="button" value="next page" name="s"></a>';
+?>
